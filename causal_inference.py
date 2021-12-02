@@ -1,6 +1,7 @@
 import pandas as pd
 import utilities as utils
 import progressbar as pb
+import logging
 
 ### --------------------------
 ### Define methods - data prep
@@ -20,7 +21,7 @@ def prep_data_pairs(in_file):
         max_time:       maximum time stamp
     """
 
-    print("Prepping data structure.")
+    logging.log(logging.DEBUG, "Prepping data structure.")
 
     obs_pair_hash = {}
     obs_times_hash = {}
@@ -75,7 +76,7 @@ def generate_hypotheses_for_effects(cause_alpha, effects_alpha, window_start, wi
         A list of tuples containing the hypotheses for possible prima facie causes
     """
 
-    print("Generating hypotheses w.r.t. prima facie causes.")
+    logging.log(logging.DEBUG, "Generating hypotheses w.r.t. prima facie causes.")
 
     hypotheses = []
     for e in effects_alpha:
@@ -112,7 +113,7 @@ def test_hypotheses(hypotheses, obs_times_hash, events):
         Key: effect | Val: tuple containing the cause and the start and end of the time window
     """
 
-    print("Testing hypotheses.")
+    logging.log(logging.DEBUG, "Testing hypotheses.")
     # Relations | key: effect | val: tuple (cause, r, s)
     relations = {}
 
@@ -207,16 +208,16 @@ def do_all_epsilon_averages(relations, output,  obs_times_hash):
         No return value. Writes a csv with output instead. See `output` parameter.
     """
     message = "effect" if len(relations) == 1 else "effects"
-    print(f"Testing significance for {len(relations)} {message}.")
+    logging.log(logging.DEBUG, f"Testing significance for {len(relations)} {message}.")
 
     with open(output, mode='w') as f:
         f.write("cause,effect,w-start,w-end,epsilon")
 
         for effect in relations:
-            print(f"Calculating epsilons for {effect}.")
+            logging.log(logging.DEBUG, f"Calculating epsilons for {effect}.")
             for cause, r, s in pb.progressbar(relations[effect]):
                 eps = get_epsilon_average(effect, cause, r, s, relations, obs_times_hash)
-                # print(f"eps_avg for cause {cause} and effect {effect} is {eps}")
+                # logging.log(logging.DEBUG, f"eps_avg for cause {cause} and effect {effect} is {eps}")
 
                 f.write("\n")
                 f.write(f"{cause},{effect},{r},{s},{eps}")
@@ -243,7 +244,7 @@ def get_epsilon_average(effect, cause, r, s, relations, obs_times_hash):
         for x, p, q in other_causes:
             # Sum the epsilon_x for the other causes
             eps_x += utils.calculate_probability_difference(effect, cause, x, p, q, obs_times_hash)
-            # print(f"eps_x for cause {cause}, x {x} and effect {effect} is {eps_x}")
+            # logging.log(logging.DEBUG, f"eps_x for cause {cause}, x {x} and effect {effect} is {eps_x}")
         
         # Divide the sum by the amount of other causes: average epsilon to return
         eps_avg = eps_x/len(other_causes)

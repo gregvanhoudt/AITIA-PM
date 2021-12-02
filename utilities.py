@@ -52,6 +52,17 @@ def get_other_causes(effect, cause, relations):
 def calculate_probability_difference(effect, cause, x, r, s, obs_times_hash):
     """
     Calculates the epsilon_x value for a specific effect, cause, and x. The time window is assumed to be the same for all prima facie causes here.
+
+    Parameters:
+        effect: the variable representing the effect (key of the relations dict).
+        cause: the variable representing the cause.
+        x: the 'other factor' which is controlled for.
+        r: start of the relative time window.
+        s: end of the relative time window.
+        obs_times_hash: the dictionary containing all observations by variable as a tuple (case, time).
+
+    Returns:
+        epsilon_x for a specific causal relation, controlling for another factor x.
     """
     c_trues = get_true_times(obs_times_hash, cause)
 
@@ -160,7 +171,6 @@ def count_effect(e_trues, windows):
     
     return(res)
 
-
 def count_effect_deprecated(e_trues, windows):
     """
     Get the number of times where e is true in the provided time windows.
@@ -183,6 +193,13 @@ def count_effect_deprecated(e_trues, windows):
 def get_overlap(window1, window2):
     """
     Get the overlap of two time windows.
+
+    Parameters:
+        window1: the first of two time windows.
+        window2: the second of two time windows.
+    
+    Returns:
+        A list of two: start and end times of the overlap.
     """
     r, s = window1
     p, q = window2
@@ -201,6 +218,13 @@ def get_overlap(window1, window2):
 def get_only_x(window_c, window_x):
     """
     Of the two time windows, return the period where only factor x is observed.
+
+    Parameters:
+        window_c: the window where c is observed.
+        window_x: the window where x is observed.
+    
+    Returns:
+        A list of two: start and end time of the window where only x is observed.
     """
     r, s = window_c
     p, q = window_x

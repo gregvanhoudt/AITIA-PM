@@ -1,6 +1,7 @@
 import os
 import copy
 from typing import Literal
+from typing import Tuple
 
 import pandas as pd
 import numpy as np
@@ -10,7 +11,6 @@ import pm4py
 import pm4py.util.constants as constants
 
 class Hypothesizer:
-    class_var = True
     def __init__(self, filepath: str) -> None:
         self.activities: bool = False
         self.resources: bool = False
@@ -25,7 +25,7 @@ class Hypothesizer:
         self.time_unit = None
         self.observations = pd.DataFrame(columns=["case:concept:name", "observation", "time:timestamp"])
 
-    def prepare_event_log(self, time_unit: Literal['seconds', 'minutes', 'hours']):
+    def prepare_event_log(self, time_unit: Literal['seconds', 'minutes', 'hours'], sample = None):
         # Only XES or CSV is accepted
         accepted_ext = {'.xes', '.xes.gz', '.csv'}
         if ".xes.gz" in self.filepath:
@@ -54,6 +54,8 @@ class Hypothesizer:
         else:
             # When the file is an XES event log, we need to convert it to a compatible Data Frame
             data = pm4py.read_xes(self.filepath)
+            if sample != None:
+                data = pm4py.objects.log.util.sampling.sample_log(data, sample)
             data = pm4py.convert_to_dataframe(data)
             data = data.sort_values('time:timestamp', ascending=True)
 
@@ -99,14 +101,14 @@ class Hypothesizer:
         # print("Observations based on EXISTS added.")
         del data
 
-    def observe_not_exists_attribute(self, attribute_name: str, value: str, by_time: float):
+    def observe_not_exists_attribute(self, attribute_name: str, value: str, by_time: float = None):
         if self.data_prepped == False:
             raise RuntimeError(f"Before the search space can be defined, one must call the 'prepare_event_log()' function.")
 
         if attribute_name not in self.data.columns:
             raise ValueError(f"Attribute {attribute_name} is not found in the dataset. Pick one of {self.data.columns}.")
 
-        if by_time < 0:
+        if by_time != None and by_time < 0:
             raise ValueError(f"by_time must be at least 0. You passed {by_time}.")
         
         aggregates = pd.DataFrame(columns=["case:concept:name", "observation", "time:timestamp"])
@@ -120,18 +122,25 @@ class Hypothesizer:
             mintime = subset['time:timestamp'].min()
             subset['time:timestamp:reduced'] = subset["time:timestamp"].apply(lambda x: x - mintime)
 
-            # When the attribute value is not observed AND the case has taken longer than the threshold, we can add the observation at the by_time.
-            if value not in subset[[attribute_name]].values and subset['time:timestamp:reduced'].max() > by_time:
-                temp = pd.DataFrame({'case:concept:name' : [case], 'observation' : [f'{value} not observed within {by_time} {self.time_unit}'], 'time:timestamp' : [case_start_time + by_time]})
-                aggregates = aggregates.append(temp, ignore_index=True)
-
-            # Also add the observation if the value is observed but (the first occurence happened) after the time threshold
-            if value in subset[[attribute_name]].values:
-                value_observed_times = subset[subset[attribute_name] == value][["time:timestamp:reduced"]]
-                value_observed_mintime = value_observed_times['time:timestamp:reduced'].min()
-                if value_observed_mintime > by_time:
+            if by_time != None:
+                # When the attribute value is not observed AND the case has taken longer than the threshold, we can add the observation at the by_time.
+                if value not in subset[[attribute_name]].values and subset['time:timestamp:reduced'].max() > by_time:
                     temp = pd.DataFrame({'case:concept:name' : [case], 'observation' : [f'{value} not observed within {by_time} {self.time_unit}'], 'time:timestamp' : [case_start_time + by_time]})
                     aggregates = aggregates.append(temp, ignore_index=True)
+
+                # Also add the observation if the value is observed but (the first occurence happened) after the time threshold
+                if value in subset[[attribute_name]].values:
+                    value_observed_times = subset[subset[attribute_name] == value][["time:timestamp:reduced"]]
+                    value_observed_mintime = value_observed_times['time:timestamp:reduced'].min()
+                    if value_observed_mintime > by_time:
+                        temp = pd.DataFrame({'case:concept:name' : [case], 'observation' : [f'{value} not observed within {by_time} {self.time_unit}'], 'time:timestamp' : [case_start_time + by_time]})
+                        aggregates = aggregates.append(temp, ignore_index=True)
+
+            else:
+                if value not in subset[[attribute_name]].values:
+                    temp = pd.DataFrame({'case:concept:name' : [case], 'observation' : [f'{value} not observed'], 'time:timestamp' : [case_start_time]})
+                    aggregates = aggregates.append(temp, ignore_index=True)
+
 
         if len(aggregates.index) > 0:
             # Add aggregates to the observations dataframe
@@ -206,6 +215,29 @@ class Hypothesizer:
             raise RuntimeError(f"Before the search space can be defined, one must call the 'prepare_event_log()' function.")
         print("observe_not_exists_activity_resource_combo -- Not supported yet. The goal would be to easily identify if an activity was executed by an unallowed resource. For example: approvals must be performed by managers.")
         pass
+
+    def observe_activity_resource_relations(self, activities: Tuple[str, str]):
+        if self.data_prepped == False:
+            raise RuntimeError(f"Before the search space can be defined, one must call the 'prepare_event_log()' function.")
+
+        aggregates = pd.DataFrame(columns=["case:concept:name", "observation", "time:timestamp"])
+
+        # Make one observation for the activities passed along with the resources that executed them.
+        for case in tqdm(self.data["case:concept:name"].unique(), desc = f"Observe activity-resource relations for {activities}"):
+            subset: pd.DataFrame = copy.deepcopy(self.data[['case:concept:name', 'concept:name', 'org:resource', 'time:timestamp']][self.data['case:concept:name'] == case])
+            subset = subset[subset['concept:name'].isin(activities)]
+            subset = subset.reset_index(drop=True)
+
+            subset['concat'] = subset.apply(lambda row: row['concept:name'] + ' by ' + row['org:resource'], axis=1)
+            obs = subset['concat'].str.cat(sep =' - ')
+            aggregates = aggregates.append(
+                            pd.DataFrame({'case:concept:name':[case], 'observation':[obs],
+                            'time:timestamp':[max(subset['time:timestamp'])]}))
+
+        if len(aggregates.index) > 0:
+            # Add aggregates to the observations dataframe
+            self.observations = self.observations.append(aggregates, ignore_index=True)
+        
 
     def observe_directly_follows(self, activity1: str, activity2: str, negate: bool = False):
         if self.data_prepped == False:
@@ -327,11 +359,12 @@ class Hypothesizer:
         if not value in self.data[attribute].unique():
             raise ValueError(f"Value {value} was not found in the column {attribute}. Pick values from {self.data[attribute].unique()}")
 
-        subset: pd.DataFrame = copy.deepcopy(self.data[['case:concept:name', 'concept:name', 'time:timestamp']][self.data[attribute] == value])
+        subset: pd.DataFrame = copy.deepcopy(self.data[['case:concept:name', attribute, 'time:timestamp']][self.data[attribute] == value])
         subset = subset.rename(columns={attribute : 'observation'})
         subset = subset.reset_index(drop=True)
 
         # Add events to the data
+        # self.observations = self.observations.append(data[["case:concept:name", "observation", "time:timestamp"]], ignore_index=True)
         self.observations = self.observations.append(subset, ignore_index=True)
         self.arrange_observations()
 

@@ -1,6 +1,8 @@
 from typing import Tuple
 import pandas as pd
+import numpy as np
 import tqdm
+import copy
 
 class Inference:
 
@@ -8,10 +10,10 @@ class Inference:
         self.source = pd.read_csv(file_path)
         self.pb = pb
         
-        self.dict_by_time = {}
         self.dict_by_obs = {}
         self.alphabet = []
         self.events = 0
+        self.traces = 0
         self.max_time = 0
 
         self.hypotheses = []
@@ -21,133 +23,98 @@ class Inference:
 
     def populate_vars(self) -> None:
         """
-        Read time series data from file and get *dict_by_time*, *dict_by_obs*, and *alphabet*.
+        Read time series data from file and get *dict_by_obs*, and *alphabet*.
         """
         self.events = len(self.source.index)
+        self.traces = len(self.source['case:concept:name'].unique())
 
         for index, row in self.generate_iterator(self.source.iterrows(), "Processing time series data"):
             case, obs, t = row
 
-            # Populate dict_by_time
-            # Overview of all observations by timestamp
-            # (In case you need to know what observations were made at a specific time)
-            if t not in self.dict_by_time:
-                self.dict_by_time[t] = [(case, obs)]
-            else:
-                self.dict_by_time[t].append((case, obs))
-            
             # Populate dict_by_obs
             # Overview of all timestamps by observation
             # (In case you need to know when specific observations were made)
             if obs not in self.dict_by_obs:
-                self.dict_by_obs[obs] = {t: [case]}
+                self.dict_by_obs[obs] = {case: [t]}
             else:
-                if t in self.dict_by_obs[obs]:
-                    self.dict_by_obs[obs][t].append(case)
+                if case in self.dict_by_obs[obs]:
+                    self.dict_by_obs[obs][case].append(t)
                 else:
-                    self.dict_by_obs[obs][t] = [case]
+                    self.dict_by_obs[obs][case] = [t]
 
             # Populate the alphabet
             # Overview of all different observations made (states)
             if obs not in self.alphabet:
                 self.alphabet.append(str(obs))
             
-            # Set max time. Required in case no window is provided in the analyses.
+            # Set max time
             self.max_time = self.source.iloc[-1,2]
 
-    def generate_hypotheses_for_effects(self, causes, effects, window = None) -> None:
+    def generate_hypotheses_for_effects(self, causes, effects) -> None:
         """
         Generates hypotheses for all effects. A hypothesis is of form:
-            (cause effect window-start window-end)
+            (cause, effect)
 
         Parameters:
             causes:     a variable or set of variables
-            effectss:   a list of possible effects
-            window:     a tuple containing the start and end of the time window.
+            effects:   a list of possible effects
         """
-        self.hypotheses = []
-        if window != None:
-            window_hyps = window
-        else:
-            window_hyps = (0, self.max_time)
-            print(f"Window was not provided. Defaulting to the entire duration of the event log: (0, {self.max_time}).")
+        self.hypotheses = [(cause, effect) for effect in effects for cause in causes if cause != effect]
 
-        for effect in self.generate_iterator(effects, f"Generating hypotheses for {effects}"):
-            self.hypotheses.extend(self.generate_hypotheses_for_effect(causes, effect, window_hyps))
-
-    def generate_hypotheses_for_effect(self, causes, effect, window) -> list:
+    def test_for_prima_facie(self) -> None:
         """
-        Lists all hypotheses for a given effect. Excludes hypotheses where the cause and effect are the same variable.
-        
-        See the docs of `generate_hypotheses_for_effects`
-        """
-        hyps = []
-        for cause in causes:
-            if cause != effect:
-                hyps.append((cause, effect, window))
-        return hyps
-
-    def test_hypotheses(self) -> None:
-        """
-        For a hypothesis of form (c,e,(r,s)), test whether c is a potential cause of e related to time window [r, s].
-        Also gets *relations*.
+        For a hypothesis of form (c,e), test whether c is a potential cause of e.
         """
         for hypothesis in self.generate_iterator(self.hypotheses, "Testing for prima facie conditions"):
-            cause, effect, window = hypothesis
+            cause, effect = hypothesis
 
-            c_and_e, c_trues, e_trues = self.test_pair_window(cause, effect, window)
+            c_and_e, c_trues, e_trues = self.test_cause_effect_pair(cause, effect)
 
             if self.is_prima_facie(c_and_e, c_trues, e_trues):
                 # Add entry to Prima Facie dict containing all causes and their time windows
-                if effect in self.prima_facie:
-                    self.prima_facie[effect].append((cause, window))
+                if effect not in self.prima_facie:
+                    self.prima_facie[effect] = [cause]
                 else:
-                    self.prima_facie[effect] = [(cause, window)]
+                    self.prima_facie[effect].append(cause)
 
-    def test_pair_window(self, cause, effect, window) -> Tuple[int, int, int]:
+    def test_cause_effect_pair(self, cause, effect) -> Tuple[int, int, int]:
         """
-        Get the amount of times that the cause and effect were observed together, taking into account the time window.
-        In other words: for each time that the cause was observed, we count how often e was observed in the following window.
-
-        Also take into account that the cause and effect must take place within the same case.
+        Get the amount of traces where the cause occurred, the effect occurred and where the cause occurred before the effect
         """
-        c_true_times = self.dict_by_obs[cause]
-        e_true_times = self.dict_by_obs[effect]
-        c_and_e = 0 # The amount that E was observed in a time window following C
 
-        r, s = window
+        subset = copy.deepcopy(self.source[self.source['observation'].isin([cause, effect])])
 
-        for time in c_true_times:
-            c_cases = c_true_times[time]
+        c_traces = subset[subset['observation'] == cause]['case:concept:name'].unique()
+        e_traces = subset[subset['observation'] == effect]['case:concept:name'].unique()
+        c_e_cases = set(c_traces).intersection(e_traces)
 
-            e_trues_windowed = { key:val for key,val in e_true_times.items() if key >= time + r and key <= time + s }
-            e_cases = []
-            # The time of e is irrelevant, the dict comprehension made sure it falls in the window.
-            # As such, just get the complete list of e_cases by dropping the dict structure
-            for e_obs in e_trues_windowed.values():
-                e_cases.extend(e_obs)
-            
-            # We now know how often they were observed together at the specific time.
-            # Count for each case in the causes if that same case is also found in the effects list.
-            for case in c_cases:
-                if case in e_cases:
-                    c_and_e += 1
+        c_before_e = 0
 
-        return(c_and_e, len(c_true_times), len(e_true_times))
+        for case in c_e_cases:
+            trace = subset[subset['case:concept:name'] == case]
+            obs_values = trace['observation'].values
+            time_values = trace['time:timestamp'].values
+            if effect in obs_values:
+                c_times = time_values[obs_values == cause]
+                e_times = time_values[obs_values == effect]
+                if np.min(c_times) <= np.max(e_times):
+                    c_before_e += 1
+
+        return(c_before_e, len(c_traces), len(e_traces))
 
     def is_prima_facie(self, c_and_e, c_trues, e_trues) -> bool:
         """
         Determines whether c is a prima facie cause of e.
 
         Parameters:
-            c_and_e:    number of times both events were true in a time window
-            c_true:     number of times the cause was true in a time window
-            e_true:     number of times the effect was true in a window
+            c_and_e:    number of traces where c occurred before e
+            c_trues:     number of traces containing c
+            e_trues:     number of traces containing e
         """
         if c_trues == 0:
             return(False)
         
-        return (c_and_e / c_trues > e_trues / self.events)
+        return (c_and_e / c_trues > e_trues / self.traces)
 
     def calculate_average_epsilons(self, target_file) -> None:
         """
@@ -157,56 +124,80 @@ class Inference:
             target_file: the output file to write results to.
         """
         with open(target_file, mode='w') as f:
-            f.write(f"cause,effect,w-start,w-end,epsilon")
+            f.write(f"cause,effect,epsilon")
 
             for effect in self.prima_facie:
-                for cause, window in self.generate_iterator(self.prima_facie[effect], desc = "Calculating Epsilon values"):
-                    eps = self.get_epsilon_average(effect, cause)
+                for cause in self.generate_iterator(self.prima_facie[effect], desc = "Calculating Epsilon values"):
+                    epsilon_avg = self.get_epsilon_average(effect, cause)
                     f.write("\n")
-                    f.write(f"{cause},{effect},{window[0]},{window[1]},{eps}")
+                    f.write(f"{cause},{effect},{epsilon_avg}")
 
     def get_epsilon_average(self, effect, cause) -> float:
         """
-        Calculates the epsilon value for a given relationship.
+        Calculates the epsilon value for a given hypothesis.
 
         Parameters:
             effect: the variable representing the effect.
             cause: the variable representing the prima facie cause
-            window: the time window
         """
-        other_causes = [(c, window) for (c, window) in self.prima_facie[effect] if c != cause]
+        other_causes = [x for x in self.prima_facie[effect] if x != cause]
 
         if len(other_causes) != 0:
             eps_x = 0
-            for x, window in other_causes:
+            for x in other_causes:
                 # Sum epsilon_x for the other causes
-                eps_x += self.calculate_probability_differences(effect, cause, x, window)
+                eps_x += self.calculate_probability_differences(effect, cause, x)
 
             return(eps_x / len(other_causes))
         
         return None
 
-    def calculate_probability_differences(self, effect, cause, x, window) -> float:
+    def calculate_probability_differences(self, effect, cause, x) -> float:
         """
-        Calculates the epsilon_x value for a specific effect, cause, and x. The time window is assumed to be the same for all prima facie causes here.
+        Calculates the epsilon_x value for a specific effect, cause, and x.
         """
-        c_trues = self.dict_by_obs[cause]
-        e_trues = self.dict_by_obs[effect]
-        x_trues = self.dict_by_obs[x]
 
-        # P(effect | cause & other cause)
-        c_and_x = Inference.get_ands(c_trues, x_trues, window)
-        e_and_count = Inference.count_effect(e_trues, c_and_x)
+        c_and_x = 0
+        c_and_x_and_e = 0
+        not_c_and_x = 0
+        not_c_and_x_and_e = 0
 
-        # P(effect | not cause but other cause)
-        not_c_and_x = Inference.get_nots(c_trues, x_trues, window)
-        e_not_count = Inference.count_effect(e_trues, not_c_and_x)
+        # Because every counter requires x in the trace, only iterate over cases in which x is present.
+        subset = copy.deepcopy(self.source[self.source['observation'].isin([cause, effect, x])])
+        x_cases = subset[subset['observation'] == x]['case:concept:name'].unique()
 
-        # Result should be c_and_x - not_c_and_x. See the book for details ...
-        if len(c_and_x) == 0 or len(not_c_and_x) == 0:
+        for case in x_cases:
+            trace = subset[subset['case:concept:name'] == case]
+            obs_values = trace['observation'].values
+            time_values = trace['time:timestamp'].values
+
+            # counts for c and x
+            if np.any(obs_values == cause) and np.any(obs_values == x):
+                c_and_x += 1
+                if np.any(obs_values == effect):
+                    c_times = time_values[obs_values == cause]
+                    x_times = time_values[obs_values == x]
+                    e_times = time_values[obs_values == effect]
+
+                    if np.min(c_times) <= np.max(e_times) and np.min(x_times) <= np.max(e_times):
+                        c_and_x_and_e += 1
+
+            # counts for not c only x
+            if np.all(obs_values != cause) and np.any(obs_values == x):
+                not_c_and_x += 1
+                if np.any(obs_values == effect):
+                    x_times = time_values[obs_values == x]
+                    e_times = time_values[obs_values == effect]
+
+                    if np.min(x_times) <= np.max(e_times):
+                        not_c_and_x_and_e += 1
+
+        # Return value: P(e|c ∧ x) − P(e|¬c ∧ x)
+        # or e and c and x / c and x - e not c and x / not c and x
+        if c_and_x == 0 or not_c_and_x == 0:
             return 0
         else:
-            return(e_and_count / len(c_and_x) - e_not_count / len(not_c_and_x))
+            return(c_and_x_and_e / c_and_x - not_c_and_x_and_e / not_c_and_x)
 
     #########
     # Other #
@@ -230,7 +221,7 @@ class Inference:
         Parameters:
             c_trues: timepoints where c is true containing lists of cases observed at that point.
             x_trues: timepoints where x is true containing lists of cases observed at that point.
-            r,s: the start and end times of the time window.
+            window (r,s): the start and end times of the time window.
         
         Returns:
             List of tuples describing time window overlaps between c and x taking into account the case notion.

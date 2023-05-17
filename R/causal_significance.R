@@ -1,28 +1,46 @@
 library(tidyverse)
-library(fdrtool)
+library(stringr)
+library(qvalue)
+library(readxl)
+library(xlsx)
 
-filename = "RTFM"
+wd <- "./Output/Finalised/"
+file <- "VSI_Revision_VaryingTraces.xlsx"
+sheets <- c("10.000 traces", "7500 traces", "5000 traces", "2500 traces", "1000 traces", "500 traces", "250 traces", "100 traces")
 
-data = read_csv(paste0("./Output/", filename, ".csv"))
+sheet <- "10.000 traces"
 
-# First off, we need to calculate z-values from the obtained epsilon-values.
-mu = mean(data$epsilon)
-sigma = sd(data$epsilon)
+compute_q <- function(df) {
+  mu = mean(df$epsilon)
+  sigma = sd(df$epsilon)
 
-data = data %>%
-  mutate(z = (epsilon - mu) / sigma )
+  df = df %>%
+    mutate(z = (epsilon - mu) / sigma ) %>%
+    mutate(p = pnorm(z, lower.tail = F))
 
-# Given these z-values, we can estimate f(z), define the null density from the data, and calculate the false discovery rate.
-# To that end, we can use the R package fdrtool as recommended by Kleinberg.
+  q <- qvalue_truncp(df$p)
+  q_df <- data.frame(p = q$pvalues, q = q$qvalues)
+  df <- left_join(df, q_df)
+  return(df)
+}
 
-# fdr = fdrtool(data$z) # Did not work for the RTFM search space
-fdr = fdrtool(data$z, cutoff.method = "pct0", pct0 = 0.95)
+for (sheet in sheets) {
+  # read the file
+  df <- read_excel(paste0(wd, file), sheet = sheet)
 
-# Add the fdr values to the dataset, and see which causes are significant for the effect.
-data$fdr = fdr[["lfdr"]]
+  # perform computations
+  df <- compute_q(df)
 
-# Set a threshold for the FDR to determine significance.
-threshold = 0.05
-data %>% filter(fdr <= threshold)
+  # Write the results to the file
+  xlsx::write.xlsx(df, paste0(wd, str_replace(file, '.xlsx', '_q.xlsx')), sheetName = sheet, append = TRUE)
+}
 
-write_csv(data, paste0("./output/", filename, "_causal_sig.csv"))
+# Genuine causes filtered out
+df <- read_excel(paste0(wd, "VSI_Revision_NoGenuines.xlsx"))
+df <- compute_q(df)
+xlsx::write.xlsx(df, paste0(wd, "VSI_Revision_NoGenuines_q.xlsx"))
+
+# RTFM - first case study
+df <- read_excel(paste0(wd, "RTFM.xlsx"))
+df <- compute_q(df)
+xlsx::write.xlsx(df, paste0(wd, "RTFM_q.xlsx"))

@@ -1,0 +1,53 @@
+cause,effect,epsilon
+Log and Document Complaint - Clerk 4,Unresolved Complaint,0.0009782951790757862
+Log and Document Complaint - Clerk 2,Unresolved Complaint,0.035581230394215735
+2nd Opinion Initial Assessment not observed,Unresolved Complaint,0.5066270537901623
+Log and Document Complaint - Clerk 3,Unresolved Complaint,0.013118928045619418
+Initial Assessment - Clerk 12,Unresolved Complaint,0.03557521062820635
+Communicate Initial Assessment - Clerk 12,Unresolved Complaint,0.03557521062820635
+Communicate Initial Assessment not observed within 24 hours,Unresolved Complaint,0.6272636503555031
+Investigation and Analysis - Analyst 1,Unresolved Complaint,0.06663378061446261
+Log and Document Complaint - Clerk 10,Unresolved Complaint,0.016841932269721277
+Log and Document Complaint - Clerk 5,Unresolved Complaint,0.01413374830770101
+Investigation and Analysis - Analyst 2,Unresolved Complaint,0.07673791070803086
+Log and Document Complaint - Clerk 13,Unresolved Complaint,-0.006397343899068461
+Initial Assessment - Clerk 1,Unresolved Complaint,0.06387477861618678
+Communicate Initial Assessment - Clerk 1,Unresolved Complaint,0.06387477861618678
+Initial Assessment - Clerk 13,Unresolved Complaint,-0.02198232802628781
+Initial Assessment - Clerk 2,Unresolved Complaint,-0.03645886223612948
+Communicate Initial Assessment - Clerk 2,Unresolved Complaint,-0.03645886223612948
+Communicate Initial Assessment - Clerk 13,Unresolved Complaint,-0.02198232802628781
+Resolution and Follow Up - Analyst 9,Unresolved Complaint,0.05813729152468721
+Resolution and Follow Up - Analyst 10,Unresolved Complaint,0.08855799901082681
+Log and Document Complaint - Clerk 6,Unresolved Complaint,-0.030167803219731476
+Log and Document Complaint - Clerk 9,Unresolved Complaint,0.033368206202034394
+Investigation and Analysis by Analyst 5 - Resolution and Follow Up by Analyst 10,Unresolved Complaint,0.02453897756029709
+Investigation and Analysis by Analyst 2 - Resolution and Follow Up by Analyst 10,Unresolved Complaint,0.23484548400944566
+Investigation and Analysis by Analyst 8 - Resolution and Follow Up by Analyst 1,Unresolved Complaint,0.019173776631704526
+Log and Document Complaint - Clerk 1,Unresolved Complaint,0.0325131210236748
+Investigation and Analysis by Analyst 2 - Resolution and Follow Up by Analyst 5,Unresolved Complaint,0.011301880434485214
+Investigation and Analysis by Analyst 9 - Resolution and Follow Up by Analyst 6,Unresolved Complaint,0.057586786349473805
+Log and Document Complaint - Clerk 7,Unresolved Complaint,0.005015011472715611
+Initial Assessment - Clerk 14,Unresolved Complaint,-0.011175996468598773
+Communicate Initial Assessment - Clerk 14,Unresolved Complaint,-0.011175996468598773
+Investigation and Analysis by Analyst 10 - Resolution and Follow Up by Analyst 7,Unresolved Complaint,0.028444123829115108
+Investigation and Analysis by Analyst 3 - Resolution and Follow Up by Analyst 10,Unresolved Complaint,0.01469083557061277
+Investigation and Analysis by Analyst 1 - Resolution and Follow Up by Analyst 10,Unresolved Complaint,0.2390595030408423
+Investigation and Analysis by Analyst 6 - Resolution and Follow Up by Analyst 4,Unresolved Complaint,0.004838220200108704
+Investigation and Analysis by Analyst 1 - Resolution and Follow Up by Analyst 9,Unresolved Complaint,0.2330119246493011
+Investigation and Analysis by Analyst 2 - Resolution and Follow Up by Analyst 9,Unresolved Complaint,0.23603077341236248
+Investigation and Analysis by Analyst 6 - Resolution and Follow Up by Analyst 3,Unresolved Complaint,0.00845221709493495
+Investigation and Analysis by Analyst 1 - Resolution and Follow Up by Analyst 2,Unresolved Complaint,0.009979227244602273
+Investigation and Analysis by Analyst 9 - Resolution and Follow Up by Analyst 2,Unresolved Complaint,0.008230533784332542
+Investigation and Analysis by Analyst 4 - Resolution and Follow Up by Analyst 10,Unresolved Complaint,0.014226402176459986
+Investigation and Analysis by Analyst 3 - Resolution and Follow Up by Analyst 8,Unresolved Complaint,0.02519875916938283
+Investigation and Analysis by Analyst 7 - Resolution and Follow Up by Analyst 10,Unresolved Complaint,0.015718361435661285
+Investigation and Analysis by Analyst 10 - Resolution and Follow Up by Analyst 2,Unresolved Complaint,-0.0034016935815225444
+Investigation and Analysis by Analyst 2 - Resolution and Follow Up by Analyst 4,Unresolved Complaint,0.03267885619640995
+Investigation and Analysis by Analyst 10 - Resolution and Follow Up by Analyst 1,Unresolved Complaint,0.014042098895344059
+Investigation and Analysis by Analyst 5 - Resolution and Follow Up by Analyst 6,Unresolved Complaint,0.0472004023362891
+Investigation and Analysis by Analyst 5 - Resolution and Follow Up by Analyst 7,Unresolved Complaint,0.024761567111636365
+Investigation and Analysis by Analyst 3 - Resolution and Follow Up by Analyst 4,Unresolved Complaint,0.04795375695754002
+Investigation and Analysis by Analyst 7 - Resolution and Follow Up by Analyst 8,Unresolved Complaint,0.0374105675960599
+Investigation and Analysis by Analyst 8 - Resolution and Follow Up by Analyst 10,Unresolved Complaint,-0.04024594846570982
+Investigation and Analysis by Analyst 9 - Resolution and Follow Up by Analyst 10,Unresolved Complaint,0.08804866192895576

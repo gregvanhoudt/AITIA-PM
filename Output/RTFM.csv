@@ -1,81 +1,81 @@
-cause,effect,w-start,w-end,epsilon
-Send Fine - ,Send for Credit Collection,0,21407.0,0.5123579855106337
-Insert Fine Notification - ,Send for Credit Collection,0,21407.0,0.6445152907594891
-Create Fine - 45,Send for Credit Collection,0,21407.0,0.061509099874813455
-A,Send for Credit Collection,0,21407.0,0.5296721148361523
-Create Fine - 28,Send for Credit Collection,0,21407.0,0.08923818797236518
-Create Fine - 62,Send for Credit Collection,0,21407.0,0.053314673173430124
-Create Fine - 44,Send for Credit Collection,0,21407.0,0.05710032817627755
-Create Fine - 49,Send for Credit Collection,0,21407.0,0.06289244398854232
-Create Fine - 52,Send for Credit Collection,0,21407.0,0.0668386713858443
-Create Fine - 40,Send for Credit Collection,0,21407.0,0.06931291609402984
-Create Fine - 65,Send for Credit Collection,0,21407.0,0.05484277225880968
-Create Fine - 43,Send for Credit Collection,0,21407.0,0.05165931493003767
-Create Fine - 31,Send for Credit Collection,0,21407.0,0.06864532134283981
-Create Fine - 26,Send for Credit Collection,0,21407.0,0.061624056573210996
-Create Fine - 57,Send for Credit Collection,0,21407.0,0.06985574200764075
-Create Fine - 56,Send for Credit Collection,0,21407.0,0.030216420359679644
-Create Fine - 46,Send for Credit Collection,0,21407.0,0.11529834291751878
-Create Fine - 59,Send for Credit Collection,0,21407.0,0.07812632374087684
-Create Fine - 16,Send for Credit Collection,0,21407.0,0.05090376232235682
-Create Fine - 24,Send for Credit Collection,0,21407.0,0.04138582936051291
-Create Fine - 63,Send for Credit Collection,0,21407.0,0.061385469511906154
-Create Fine - 11,Send for Credit Collection,0,21407.0,0.07820372464793457
-Create Fine - 66,Send for Credit Collection,0,21407.0,0.04833311626101939
-Create Fine - 30,Send for Credit Collection,0,21407.0,0.06801171677341188
-Create Fine - 47,Send for Credit Collection,0,21407.0,0.09563027544258448
-Create Fine - 53,Send for Credit Collection,0,21407.0,0.06969509712291974
-Create Fine - 58,Send for Credit Collection,0,21407.0,0.05781903206362169
-Create Fine - 29,Send for Credit Collection,0,21407.0,0.11550139910431306
-Send Fine not observed within 720 hours,Send for Credit Collection,0,21407.0,0.5409374121081929
-Create Fine - 42,Send for Credit Collection,0,21407.0,0.06665002255460856
-Create Fine - 9,Send for Credit Collection,0,21407.0,0.060310512158079796
-Create Fine - 41,Send for Credit Collection,0,21407.0,0.07269542778208189
-Create Fine - 50,Send for Credit Collection,0,21407.0,0.03428915113973368
-Create Fine - 54,Send for Credit Collection,0,21407.0,0.09200869454034011
-Create Fine - 48,Send for Credit Collection,0,21407.0,0.04648734788981262
-Create Fine - 37,Send for Credit Collection,0,21407.0,0.048376157270676165
-M,Send for Credit Collection,0,21407.0,0.17958755844750746
-Insert Date Appeal to Prefecture - ,Send for Credit Collection,0,21407.0,0.03273489189050913
-Appeal to Judge directly follows Insert Fine Notification,Send for Credit Collection,0,21407.0,0.08776371308016878
-Appeal to Judge - 0,Send for Credit Collection,0,21407.0,0.0997112592049301
-Add penalty - ,Send for Credit Collection,0,21407.0,0.6445152907594891
-Send Fine not observed within 1440 hours,Send for Credit Collection,0,21407.0,0.4041273293734106
-Create Fine - 39,Send for Credit Collection,0,21407.0,0.05091112164083124
-Insert Date Appeal to Prefecture directly follows Insert Fine Notification,Send for Credit Collection,0,21407.0,0.018967532619977016
-Add penalty directly follows Insert Fine Notification,Send for Credit Collection,0,21407.0,0.6956047769396314
-Payment - ,Send for Credit Collection,0,21407.0,0.039783412827603344
-C,Send for Credit Collection,0,21407.0,0.2489156161110855
-Send Appeal to Prefecture - ,Send for Credit Collection,0,21407.0,0.03481259716399208
-Create Fine - 852,Send for Credit Collection,0,21407.0,0.07814494693948185
-Create Fine - 849,Send for Credit Collection,0,21407.0,0.06188726295666497
-Create Fine - 851,Send for Credit Collection,0,21407.0,0.08225006476258094
-Create Fine - 860,Send for Credit Collection,0,21407.0,0.1048024912476623
-Create Fine - 857,Send for Credit Collection,0,21407.0,0.10274908333391387
-Create Fine - 848,Send for Credit Collection,0,21407.0,0.061401277744522545
-Create Fine - 856,Send for Credit Collection,0,21407.0,0.07975162702103206
-Create Fine - 847,Send for Credit Collection,0,21407.0,0.0670699022685264
-Create Fine - 846,Send for Credit Collection,0,21407.0,0.058717206604453544
-Create Fine - 858,Send for Credit Collection,0,21407.0,0.09117987710175551
-Create Fine - 10,Send for Credit Collection,0,21407.0,0.0780590717299578
-Create Fine - 854,Send for Credit Collection,0,21407.0,0.05803587879589694
-Receive Result Appeal from Prefecture - ,Send for Credit Collection,0,21407.0,0.13209786972599027
-Create Fine - 861,Send for Credit Collection,0,21407.0,0.056647509060930676
-Create Fine - 855,Send for Credit Collection,0,21407.0,0.12613727087124407
-Create Fine - 859,Send for Credit Collection,0,21407.0,0.07311950048102053
-Notify Result Appeal to Offender - ,Send for Credit Collection,0,21407.0,0.15077378615086248
-Create Fine - 60,Send for Credit Collection,0,21407.0,0.04225240701557566
-Create Fine - 23,Send for Credit Collection,0,21407.0,0.04219409282700422
-Create Fine - 61,Send for Credit Collection,0,21407.0,0.05645971468756278
-Create Fine - 36,Send for Credit Collection,0,21407.0,0.05063291139240506
-Create Fine - 536,Send for Credit Collection,0,21407.0,0.05541855042554731
-Create Fine - 561,Send for Credit Collection,0,21407.0,0.054410153200024756
-Create Fine - 559,Send for Credit Collection,0,21407.0,0.05203441756059906
-Create Fine - 538,Send for Credit Collection,0,21407.0,0.0529563800306612
-Create Fine - 557,Send for Credit Collection,0,21407.0,0.08559976291556434
-Create Fine - 537,Send for Credit Collection,0,21407.0,0.04562154872878831
-Create Fine - 550,Send for Credit Collection,0,21407.0,0.05490332724891871
-Create Fine - 541,Send for Credit Collection,0,21407.0,0.05379746835443038
-Create Fine - 551,Send for Credit Collection,0,21407.0,0.05840729671634854
-Create Fine - 21,Send for Credit Collection,0,21407.0,0.050632911392405056
-Create Fine - 20,Send for Credit Collection,0,21407.0,0.0759493670886076
+cause;effect;epsilon
+Add penalty directly follows Insert Fine Notification;Send for Credit Collection;0.6956
+Insert Fine Notification - ;Send for Credit Collection;0.6445
+Add penalty - ;Send for Credit Collection;0.6445
+Send Fine not observed within 720 hours;Send for Credit Collection;0.5409
+A;Send for Credit Collection;0.5297
+Send Fine - ;Send for Credit Collection;0.5124
+Send Fine not observed within 1440 hours;Send for Credit Collection;0.4041
+C;Send for Credit Collection;0.2489
+M;Send for Credit Collection;0.1796
+Notify Result Appeal to Offender - ;Send for Credit Collection;0.1508
+Receive Result Appeal from Prefecture - ;Send for Credit Collection;0.1321
+Create Fine - 855;Send for Credit Collection;0.1261
+Create Fine - 29;Send for Credit Collection;0.1155
+Create Fine - 46;Send for Credit Collection;0.1153
+Create Fine - 860;Send for Credit Collection;0.1048
+Create Fine - 857;Send for Credit Collection;0.1027
+Appeal to Judge - 0;Send for Credit Collection;0.0997
+Create Fine - 47;Send for Credit Collection;0.0956
+Create Fine - 54;Send for Credit Collection;0.0920
+Create Fine - 858;Send for Credit Collection;0.0912
+Create Fine - 28;Send for Credit Collection;0.0892
+Appeal to Judge directly follows Insert Fine Notification;Send for Credit Collection;0.0878
+Create Fine - 557;Send for Credit Collection;0.0856
+Create Fine - 851;Send for Credit Collection;0.0823
+Create Fine - 856;Send for Credit Collection;0.0798
+Create Fine - 11;Send for Credit Collection;0.0782
+Create Fine - 852;Send for Credit Collection;0.0781
+Create Fine - 59;Send for Credit Collection;0.0781
+Create Fine - 10;Send for Credit Collection;0.0781
+Create Fine - 20;Send for Credit Collection;0.0759
+Create Fine - 859;Send for Credit Collection;0.0731
+Create Fine - 41;Send for Credit Collection;0.0727
+Create Fine - 57;Send for Credit Collection;0.0699
+Create Fine - 53;Send for Credit Collection;0.0697
+Create Fine - 40;Send for Credit Collection;0.0693
+Create Fine - 31;Send for Credit Collection;0.0686
+Create Fine - 30;Send for Credit Collection;0.0680
+Create Fine - 847;Send for Credit Collection;0.0671
+Create Fine - 52;Send for Credit Collection;0.0668
+Create Fine - 42;Send for Credit Collection;0.0667
+Create Fine - 49;Send for Credit Collection;0.0629
+Create Fine - 849;Send for Credit Collection;0.0619
+Create Fine - 26;Send for Credit Collection;0.0616
+Create Fine - 45;Send for Credit Collection;0.0615
+Create Fine - 848;Send for Credit Collection;0.0614
+Create Fine - 63;Send for Credit Collection;0.0614
+Create Fine - 9;Send for Credit Collection;0.0603
+Create Fine - 846;Send for Credit Collection;0.0587
+Create Fine - 551;Send for Credit Collection;0.0584
+Create Fine - 854;Send for Credit Collection;0.0580
+Create Fine - 58;Send for Credit Collection;0.0578
+Create Fine - 44;Send for Credit Collection;0.0571
+Create Fine - 861;Send for Credit Collection;0.0566
+Create Fine - 61;Send for Credit Collection;0.0565
+Create Fine - 536;Send for Credit Collection;0.0554
+Create Fine - 550;Send for Credit Collection;0.0549
+Create Fine - 65;Send for Credit Collection;0.0548
+Create Fine - 561;Send for Credit Collection;0.0544
+Create Fine - 541;Send for Credit Collection;0.0538
+Create Fine - 62;Send for Credit Collection;0.0533
+Create Fine - 538;Send for Credit Collection;0.0530
+Create Fine - 559;Send for Credit Collection;0.0520
+Create Fine - 43;Send for Credit Collection;0.0517
+Create Fine - 39;Send for Credit Collection;0.0509
+Create Fine - 16;Send for Credit Collection;0.0509
+Create Fine - 36;Send for Credit Collection;0.0506
+Create Fine - 21;Send for Credit Collection;0.0506
+Create Fine - 37;Send for Credit Collection;0.0484
+Create Fine - 66;Send for Credit Collection;0.0483
+Create Fine - 48;Send for Credit Collection;0.0465
+Create Fine - 537;Send for Credit Collection;0.0456
+Create Fine - 60;Send for Credit Collection;0.0423
+Create Fine - 23;Send for Credit Collection;0.0422
+Create Fine - 24;Send for Credit Collection;0.0414
+Payment - ;Send for Credit Collection;0.0398
+Send Appeal to Prefecture - ;Send for Credit Collection;0.0348
+Create Fine - 50;Send for Credit Collection;0.0343
+Insert Date Appeal to Prefecture - ;Send for Credit Collection;0.0327
+Create Fine - 56;Send for Credit Collection;0.0302
+Insert Date Appeal to Prefecture directly follows Insert Fine Notification;Send for Credit Collection;0.0190
